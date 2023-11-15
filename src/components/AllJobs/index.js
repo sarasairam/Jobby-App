@@ -68,6 +68,7 @@ class AllJobs extends Component {
     checkboxInputs: [],
     radioInput: '',
     searchInput: '',
+    checkboxInputsLocation: [],
     apiStatus: apiStatusConstants.initial,
     apiJobStatus: apiJobsStatusConstants.initial,
   }
@@ -112,7 +113,12 @@ class AllJobs extends Component {
   onGetJobDetails = async () => {
     this.setState({apiJobStatus: apiJobsStatusConstants.inProgress})
     const jwtToken = Cookies.get('jwt_token')
-    const {checkboxInputs, radioInput, searchInput} = this.state
+    const {
+      checkboxInputs,
+      radioInput,
+      searchInput,
+      checkboxInputsLocation,
+    } = this.state
     const jobsApiUrl = `https://apis.ccbp.in/jobs?employment_type=${checkboxInputs}&minimum_package=${radioInput}&search=${searchInput}`
     const optionsJobs = {
       headers: {
@@ -123,7 +129,7 @@ class AllJobs extends Component {
     const responseJobs = await fetch(jobsApiUrl, optionsJobs)
     if (responseJobs.ok === true) {
       const fetchedDataJobs = await responseJobs.json()
-      const updatedDataJobs = fetchedDataJobs.jobs.map(eachItem => ({
+      let updatedDataJobs = fetchedDataJobs.jobs.map(eachItem => ({
         companyLogoUrl: eachItem.company_logo_url,
         employmentType: eachItem.employment_type,
         id: eachItem.id,
@@ -133,10 +139,103 @@ class AllJobs extends Component {
         rating: eachItem.rating,
         title: eachItem.title,
       }))
-      this.setState({
-        jobsData: updatedDataJobs,
-        apiJobStatus: apiJobsStatusConstants.success,
-      })
+      const locationLength = checkboxInputsLocation.length
+      if (locationLength === 0) {
+        this.setState({
+          jobsData: updatedDataJobs,
+          apiJobStatus: apiJobsStatusConstants.success,
+        })
+      } else if (locationLength === 1) {
+        updatedDataJobs = updatedDataJobs.filter(
+          each => each.location === checkboxInputsLocation[0],
+        )
+        console.log(updatedDataJobs)
+        this.setState({
+          jobsData: updatedDataJobs,
+          apiJobStatus: apiJobsStatusConstants.success,
+        })
+      } else if (locationLength === 2) {
+        const updatedDataJobs1 = updatedDataJobs.filter(
+          each => each.location === checkboxInputsLocation[0],
+        )
+        const updatedDataJobs2 = updatedDataJobs.filter(
+          each => each.location === checkboxInputsLocation[1],
+        )
+        updatedDataJobs = [...updatedDataJobs1, ...updatedDataJobs2]
+        this.setState({
+          jobsData: updatedDataJobs,
+          apiJobStatus: apiJobsStatusConstants.success,
+        })
+      } else if (locationLength === 3) {
+        const updatedDataJobs1 = updatedDataJobs.filter(
+          each => each.location === checkboxInputsLocation[0],
+        )
+        const updatedDataJobs2 = updatedDataJobs.filter(
+          each => each.location === checkboxInputsLocation[1],
+        )
+        const updatedDataJobs3 = updatedDataJobs.filter(
+          each => each.location === checkboxInputsLocation[2],
+        )
+        updatedDataJobs = [
+          ...updatedDataJobs1,
+          ...updatedDataJobs2,
+          ...updatedDataJobs3,
+        ]
+        this.setState({
+          jobsData: updatedDataJobs,
+          apiJobStatus: apiJobsStatusConstants.success,
+        })
+      } else if (locationLength === 4) {
+        const updatedDataJobs1 = updatedDataJobs.filter(
+          each => each.location === checkboxInputsLocation[0],
+        )
+        const updatedDataJobs2 = updatedDataJobs.filter(
+          each => each.location === checkboxInputsLocation[1],
+        )
+        const updatedDataJobs3 = updatedDataJobs.filter(
+          each => each.location === checkboxInputsLocation[2],
+        )
+        const updatedDataJobs4 = updatedDataJobs.filter(
+          each => each.location === checkboxInputsLocation[3],
+        )
+        updatedDataJobs = [
+          ...updatedDataJobs1,
+          ...updatedDataJobs2,
+          ...updatedDataJobs3,
+          ...updatedDataJobs4,
+        ]
+        this.setState({
+          jobsData: updatedDataJobs,
+          apiJobStatus: apiJobsStatusConstants.success,
+        })
+      } else if (locationLength === 5) {
+        const updatedDataJobs1 = updatedDataJobs.filter(
+          each => each.location === checkboxInputsLocation[0],
+        )
+        const updatedDataJobs2 = updatedDataJobs.filter(
+          each => each.location === checkboxInputsLocation[1],
+        )
+        const updatedDataJobs3 = updatedDataJobs.filter(
+          each => each.location === checkboxInputsLocation[2],
+        )
+        const updatedDataJobs4 = updatedDataJobs.filter(
+          each => each.location === checkboxInputsLocation[3],
+        )
+        const updatedDataJobs5 = updatedDataJobs.filter(
+          each => each.location === checkboxInputsLocation[4],
+        )
+        updatedDataJobs = [
+          ...updatedDataJobs1,
+          ...updatedDataJobs2,
+          ...updatedDataJobs3,
+          ...updatedDataJobs4,
+          ...updatedDataJobs5,
+        ]
+        this.setState({
+          jobsData: updatedDataJobs,
+          apiJobStatus: apiJobsStatusConstants.success,
+        })
+      }
     } else {
       this.setState({apiJobStatus: apiJobsStatusConstants.failure})
     }
@@ -165,6 +264,33 @@ class AllJobs extends Component {
       this.setState(
         // eslint-disable-next-line no-unused-vars
         prevState => ({checkboxInputs: filteredData}),
+        this.onGetJobDetails,
+      )
+    }
+  }
+
+  onGetInputOptionLocation = event => {
+    const {checkboxInputsLocation} = this.state
+    const inputNotInList = checkboxInputsLocation.filter(
+      eachItem => eachItem === event.target.id,
+    )
+    if (inputNotInList.length === 0) {
+      this.setState(
+        prevState => ({
+          checkboxInputsLocation: [
+            ...prevState.checkboxInputsLocation,
+            event.target.id,
+          ],
+        }),
+        this.onGetJobDetails,
+      )
+    } else {
+      const filteredData = checkboxInputsLocation.filter(
+        eachItem => eachItem !== event.target.id,
+      )
+      this.setState(
+        // eslint-disable-next-line no-unused-vars
+        prevState => ({checkboxInputsLocation: filteredData}),
         this.onGetJobDetails,
       )
     }
@@ -300,6 +426,66 @@ class AllJobs extends Component {
     </ul>
   )
 
+  onGetCheckBoxesLocationView = () => (
+    <ul className="check-boxes-container">
+      <li className="li-container">
+        <input
+          className="input"
+          id="Hyderabad"
+          type="checkbox"
+          onChange={this.onGetInputOptionLocation}
+        />
+        <label className="label" htmlFor="Hyderabad">
+          Hyderabad
+        </label>
+      </li>
+      <li className="li-container">
+        <input
+          className="input"
+          id="Delhi"
+          type="checkbox"
+          onChange={this.onGetInputOptionLocation}
+        />
+        <label className="label" htmlFor="Delhi">
+          Delhi
+        </label>
+      </li>
+      <li className="li-container">
+        <input
+          className="input"
+          id="Bangalore"
+          type="checkbox"
+          onChange={this.onGetInputOptionLocation}
+        />
+        <label className="label" htmlFor="Bangalore">
+          Bangalore
+        </label>
+      </li>
+      <li className="li-container">
+        <input
+          className="input"
+          id="Chennai"
+          type="checkbox"
+          onChange={this.onGetInputOptionLocation}
+        />
+        <label className="label" htmlFor="Chennai">
+          Chennai
+        </label>
+      </li>
+      <li className="li-container">
+        <input
+          className="input"
+          id="Mumbai"
+          type="checkbox"
+          onChange={this.onGetInputOptionLocation}
+        />
+        <label className="label" htmlFor="Mumbai">
+          Mumbai
+        </label>
+      </li>
+    </ul>
+  )
+
   onGetRadioButtonsView = () => (
     <ul className="radio-button-container">
       {salaryRangesList.map(eachItem => (
@@ -350,6 +536,9 @@ class AllJobs extends Component {
             <hr className="hr-line" />
             <h1 className="text">Salary Range</h1>
             {this.onGetRadioButtonsView()}
+            <hr className="hr-line" />
+            <h1 className="text">Locations</h1>
+            {this.onGetCheckBoxesLocationView()}
           </div>
           <div className="jobs-container">
             <div>
