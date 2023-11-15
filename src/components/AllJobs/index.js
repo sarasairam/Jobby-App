@@ -103,7 +103,7 @@ class AllJobs extends Component {
         apiStatus: apiStatusConstants.success,
       })
     } else {
-      this.setStats({
+      this.setState({
         apiStatus: apiStatusConstants.failure,
       })
     }

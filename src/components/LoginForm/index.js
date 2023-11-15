@@ -66,27 +66,35 @@ class LoginForm extends Component {
             alt="website logo"
             className="login-logo"
           />
-          <label htmlFor="username">USERNAME</label>
+          <label htmlFor="username" className="form-label">
+            USERNAME
+          </label>
           <input
             value={username}
             type="text"
             id="username"
+            className="form-input"
             onChange={this.updateUserName}
             placeholder="username"
           />
           <br />
           <br />
-          <label htmlFor="password">PASSWORD</label>
+          <label htmlFor="password" className="form-label">
+            PASSWORD
+          </label>
           <input
             value={password}
             type="password"
             id="password"
+            className="form-input"
             onChange={this.updatePassword}
             placeholder="password"
           />
           <br />
           <br />
-          <button type="submit">Login</button>
+          <button type="submit" className="form-submit-btn">
+            Login
+          </button>
           {displayMsg && <p className="error-message">*{error}</p>}
         </form>
       </div>

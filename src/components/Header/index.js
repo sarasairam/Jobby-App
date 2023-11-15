@@ -30,7 +30,7 @@ const Header = props => {
           </Link>
         </li>
         <li>
-          <FiLogOut className="home-icon" onClick={onClickLogout} />
+          <FiLogOut className="home-jobs-btn" onClick={onClickLogout} />
           <button type="button" className="btn-logout" onClick={onClickLogout}>
             Logout
           </button>
